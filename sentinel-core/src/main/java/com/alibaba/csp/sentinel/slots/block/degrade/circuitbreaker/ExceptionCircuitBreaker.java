@@ -34,6 +34,9 @@ import static com.alibaba.csp.sentinel.slots.block.RuleConstant.DEGRADE_GRADE_EX
  */
 public class ExceptionCircuitBreaker extends AbstractCircuitBreaker {
 
+    /**
+     * 异常策略
+     */
     private final int strategy;
     private final int minRequestAmount;
     private final double threshold;
@@ -81,7 +84,7 @@ public class ExceptionCircuitBreaker extends AbstractCircuitBreaker {
         if (currentState.get() == State.OPEN) {
             return;
         }
-        
+
         if (currentState.get() == State.HALF_OPEN) {
             // In detecting request
             if (error == null) {
@@ -91,7 +94,7 @@ public class ExceptionCircuitBreaker extends AbstractCircuitBreaker {
             }
             return;
         }
-        
+
         List<SimpleErrorCounter> counters = stat.values();
         long errCount = 0;
         long totalCount = 0;
@@ -138,9 +141,9 @@ public class ExceptionCircuitBreaker extends AbstractCircuitBreaker {
         @Override
         public String toString() {
             return "SimpleErrorCounter{" +
-                "errorCount=" + errorCount +
-                ", totalCount=" + totalCount +
-                '}';
+                    "errorCount=" + errorCount +
+                    ", totalCount=" + totalCount +
+                    '}';
         }
     }
 

@@ -49,7 +49,7 @@ public class CtSph implements Sph {
      * {@link ProcessorSlotChain}, no matter in which {@link Context}.
      */
     private static volatile Map<ResourceWrapper, ProcessorSlotChain> chainMap
-        = new HashMap<ResourceWrapper, ProcessorSlotChain>();
+            = new HashMap<ResourceWrapper, ProcessorSlotChain>();
 
     private static final Object LOCK = new Object();
 
@@ -110,41 +110,60 @@ public class CtSph implements Sph {
     }
 
     private AsyncEntry asyncEntryInternal(ResourceWrapper resourceWrapper, int count, Object... args)
-        throws BlockException {
+            throws BlockException {
         return asyncEntryWithPriorityInternal(resourceWrapper, count, false, args);
     }
 
+    /**
+     * @param resourceWrapper 资源
+     * @param count           默认值为1
+     * @param prioritized     默认值为false
+     * @param args            其他参数
+     * @return
+     * @throws BlockException
+     */
     private Entry entryWithPriority(ResourceWrapper resourceWrapper, int count, boolean prioritized, Object... args)
-        throws BlockException {
+            throws BlockException {
+        // 从ThreadLocal中获取context
+        // 是和线程绑定的   即一个请求会占用一个线程  一个线程会绑定一个context
         Context context = ContextUtil.getContext();
+        // 若context是NullContext类型，则表示当前系统中的context数量已经超出了域值
+        // 即访问请求的数量已经超出了域值了。 直接返回一个无需做规则检测的资源操作对象entry
         if (context instanceof NullContext) {
             // The {@link NullContext} indicates that the amount of context has exceeded the threshold,
+            // {@link NullContext} 表示上下文量已超过阈值
             // so here init the entry only. No rule checking will be done.
+            // 所以这里只初始化条目。不会进行任何规则检查。
             return new CtEntry(resourceWrapper, null, context);
         }
-
+        // 若当前线程中没有绑定context，则创建一个默认的context并将其放入到ThreadLocal
         if (context == null) {
             // Using default context.
             context = InternalContextUtil.internalEnter(Constants.CONTEXT_DEFAULT_NAME);
         }
 
         // Global switch is close, no rule checking will do.
+        // 全局开关已关闭，不会进行任何规则检查。直接返回一个无需做规则检测的资源操作对象entry
         if (!Constants.ON) {
             return new CtEntry(resourceWrapper, null, context);
         }
 
+        // 检测slot链条
         ProcessorSlot<Object> chain = lookProcessChain(resourceWrapper);
 
         /*
          * Means amount of resources (slot chain) exceeds {@link Constants.MAX_SLOT_CHAIN_SIZE},
+         * 表示资源量（插槽链）超过 {@link Constants.MAX_SLOT_CHAIN_SIZE}，
          * so no rule checking will be done.
+         * 所以不会进行规则检查 直接返回一个无需做规则检测的资源操作对象entry
          */
         if (chain == null) {
             return new CtEntry(resourceWrapper, null, context);
         }
-
+        // 创建资源操作对象
         Entry e = new CtEntry(resourceWrapper, chain, context);
         try {
+            // 对资源进行链式访问
             chain.entry(context, resourceWrapper, null, count, prioritized, args);
         } catch (BlockException e1) {
             e.exit(count, args);
@@ -192,19 +211,22 @@ public class CtSph implements Sph {
      * @return {@link ProcessorSlotChain} of the resource
      */
     ProcessorSlot<Object> lookProcessChain(ResourceWrapper resourceWrapper) {
+        // 从缓存map中获取 当前资源的slotchain
+        // 缓存map的key 为资源，value为slotChain
         ProcessorSlotChain chain = chainMap.get(resourceWrapper);
         if (chain == null) {
             synchronized (LOCK) {
+                // 双重检测锁     所以肯定有创建的操作
                 chain = chainMap.get(resourceWrapper);
                 if (chain == null) {
-                    // Entry size limit.
+                    // Entry size limit. 条目大小限制
                     if (chainMap.size() >= Constants.MAX_SLOT_CHAIN_SIZE) {
                         return null;
                     }
-
+                    // 创建新的slotChain
                     chain = SlotChainProvider.newSlotChain();
                     Map<ResourceWrapper, ProcessorSlotChain> newMap = new HashMap<ResourceWrapper, ProcessorSlotChain>(
-                        chainMap.size() + 1);
+                            chainMap.size() + 1);
                     newMap.putAll(chainMap);
                     newMap.put(resourceWrapper, chain);
                     chainMap = newMap;
@@ -329,21 +351,26 @@ public class CtSph implements Sph {
 
     @Override
     public Entry entryWithPriority(String name, EntryType type, int count, boolean prioritized, Object... args)
-        throws BlockException {
+            throws BlockException {
         StringResourceWrapper resource = new StringResourceWrapper(name, type);
         return entryWithPriority(resource, count, prioritized, args);
     }
 
     @Override
     public Entry entryWithType(String name, int resourceType, EntryType entryType, int count, Object[] args)
-        throws BlockException {
+            throws BlockException {
+        // count参数：表示当前请求 可以增加多少个计数
+        // 第五个参数为false
         return entryWithType(name, resourceType, entryType, count, false, args);
     }
 
     @Override
     public Entry entryWithType(String name, int resourceType, EntryType entryType, int count, boolean prioritized,
                                Object[] args) throws BlockException {
+        // 将信息封装为一个资源对象
         StringResourceWrapper resource = new StringResourceWrapper(name, entryType, resourceType);
+        // prioritized 是false 优先级     false就是不需要优先级等待       true就必须进行优先级等待，计算出来的
+        // 返回一个具有优先级的资源操作对象entry
         return entryWithPriority(resource, count, prioritized, args);
     }
 

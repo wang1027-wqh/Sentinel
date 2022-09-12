@@ -31,28 +31,35 @@ public final class SlotChainProvider {
 
     /**
      * The load and pick process is not thread-safe, but it's okay since the method should be only invoked
+     * 加载和选择过程不是线程安全的，但没关系，因为该方法应该只被调用
      * via {@code lookProcessChain} in {@link com.alibaba.csp.sentinel.CtSph} under lock.
      *
      * @return new created slot chain
      */
     public static ProcessorSlotChain newSlotChain() {
+        // 若builder不为null 则直接使用builder构建一个chain 否则先创建一个builder
         if (slotChainBuilder != null) {
             return slotChainBuilder.build();
         }
 
         // Resolve the slot chain builder SPI.
+        // 解析槽链生成器 SPI。
+        // com.alibaba.csp.sentinel.slots.DefaultSlotChainBuilder
         slotChainBuilder = SpiLoader.of(SlotChainBuilder.class).loadFirstInstanceOrDefault();
 
+        // 若通过SPI方式未创建builder，则手工创建一个
         if (slotChainBuilder == null) {
-            // Should not go through here.
+            // Should not go through here.     不应该经过这里。
             RecordLog.warn("[SlotChainProvider] Wrong state when resolving slot chain builder, using default");
             slotChainBuilder = new DefaultSlotChainBuilder();
         } else {
             RecordLog.info("[SlotChainProvider] Global slot chain builder resolved: {}",
-                slotChainBuilder.getClass().getCanonicalName());
+                    slotChainBuilder.getClass().getCanonicalName());
         }
+        // 构建一个chain
         return slotChainBuilder.build();
     }
 
-    private SlotChainProvider() {}
+    private SlotChainProvider() {
+    }
 }

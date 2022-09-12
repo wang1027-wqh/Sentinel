@@ -112,33 +112,49 @@ public class ContextUtil {
     public static Context enter(String name, String origin) {
         if (Constants.CONTEXT_DEFAULT_NAME.equals(name)) {
             throw new ContextNameDefineException(
-                "The " + Constants.CONTEXT_DEFAULT_NAME + " can't be permit to defined!");
+                    "The " + Constants.CONTEXT_DEFAULT_NAME + " can't be permit to defined!");
         }
         return trueEnter(name, origin);
     }
 
+    /**
+     * @param name   context名称
+     * @param origin 来源
+     * @return
+     */
     protected static Context trueEnter(String name, String origin) {
+        // 从Threadlocal中尝试获取context
         Context context = contextHolder.get();
+        // 若Threadlocal中没有找到，则尝试从缓存map中获取
         if (context == null) {
+            // 缓存map中的key 是context名称，value为EntranceNode
             Map<String, DefaultNode> localCacheNameMap = contextNameNodeMap;
+            // 获取EntranceNode
             DefaultNode node = localCacheNameMap.get(name);
             if (node == null) {
+                // 检查数量是否超过域值，若缓存map的size大于了context数量的最大域值，则返回NULL_CONTEXT
                 if (localCacheNameMap.size() > Constants.MAX_CONTEXT_NAME_SIZE) {
                     setNullContext();
                     return NULL_CONTEXT;
                 } else {
                     LOCK.lock();
                     try {
+                        // 在获取一次   双重检测锁DCL 为了防止并发创建
                         node = contextNameNodeMap.get(name);
                         if (node == null) {
                             if (contextNameNodeMap.size() > Constants.MAX_CONTEXT_NAME_SIZE) {
                                 setNullContext();
                                 return NULL_CONTEXT;
                             } else {
+                                // 创建EntranceNode
                                 node = new EntranceNode(new StringResourceWrapper(name, EntryType.IN), null);
                                 // Add entrance node.
+                                // 将新建的node添加到root树中
                                 Constants.ROOT.addChild(node);
 
+                                // 新建map，将新创建的node放入新的map，再让缓存map指向新map
+                                // 为什么不直接put 为了防止"迭代稳定性问题" —— iterate stable
+                                // 对于共享集合的写操作，我们一般都采用这种框架，因为对于共享集合的读操作有可能会读到脏数据
                                 Map<String, DefaultNode> newMap = new HashMap<>(contextNameNodeMap.size() + 1);
                                 newMap.putAll(contextNameNodeMap);
                                 newMap.put(name, node);
@@ -150,6 +166,7 @@ public class ContextUtil {
                     }
                 }
             }
+            // 创建context，将context放入ThreadLocal
             context = new Context(node, name);
             context.setOrigin(origin);
             contextHolder.set(context);
@@ -165,7 +182,7 @@ public class ContextUtil {
         // Don't need to be thread-safe.
         if (shouldWarn) {
             RecordLog.warn("[SentinelStatusChecker] WARN: Amount of context exceeds the threshold "
-                + Constants.MAX_CONTEXT_NAME_SIZE + ". Entries in new contexts will NOT take effect!");
+                    + Constants.MAX_CONTEXT_NAME_SIZE + ". Entries in new contexts will NOT take effect!");
             shouldWarn = false;
         }
     }

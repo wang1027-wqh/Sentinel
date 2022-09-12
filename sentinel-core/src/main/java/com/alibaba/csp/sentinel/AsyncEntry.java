@@ -22,6 +22,7 @@ import com.alibaba.csp.sentinel.slotchain.ProcessorSlot;
 import com.alibaba.csp.sentinel.slotchain.ResourceWrapper;
 
 /**
+ * 异步资源的入口。
  * The entry for asynchronous resources.
  *
  * @author Eric Zhao
@@ -49,13 +50,13 @@ public class AsyncEntry extends CtEntry {
                 Entry parent = this.parent;
                 originalContext.setCurEntry(parent);
                 if (parent != null) {
-                    ((CtEntry)parent).child = null;
+                    ((CtEntry) parent).child = null;
                 }
             } else {
                 String curEntryName = curEntry == null ? "none"
-                    : curEntry.resourceWrapper.getName() + "@" + curEntry.hashCode();
+                        : curEntry.resourceWrapper.getName() + "@" + curEntry.hashCode();
                 String msg = String.format("Bad async context state, expected entry: %s, but actual: %s",
-                    getResourceWrapper().getName() + "@" + hashCode(), curEntryName);
+                        getResourceWrapper().getName() + "@" + hashCode(), curEntryName);
                 throw new IllegalStateException(msg);
             }
         }
@@ -75,11 +76,11 @@ public class AsyncEntry extends CtEntry {
                 return;
             }
             this.asyncContext = Context.newAsyncContext(context.getEntranceNode(), context.getName())
-                .setOrigin(context.getOrigin())
-                .setCurEntry(this);
+                    .setOrigin(context.getOrigin())
+                    .setCurEntry(this);
         } else {
             RecordLog.warn(
-                "[AsyncEntry] Duplicate initialize of async context for entry: " + resourceWrapper.getName());
+                    "[AsyncEntry] Duplicate initialize of async context for entry: " + resourceWrapper.getName());
         }
     }
 

@@ -67,11 +67,15 @@ public abstract class AbstractCircuitBreaker implements CircuitBreaker {
     @Override
     public boolean tryPass(Context context) {
         // Template implementation.
+        // 若熔断器状态为close状态 则请求直接通过
         if (currentState.get() == State.CLOSED) {
             return true;
         }
+        //如果是open状态
         if (currentState.get() == State.OPEN) {
             // For half-open state we allow a request for probing.
+            // 对于半开状态，我们允许探测请求。
+            // 若下次窗口时间点已经到达，且open状态可以从open状态变为half-open（可以进行探测访问）
             return retryTimeoutArrived() && fromOpenToHalfOpen(context);
         }
         return false;
@@ -102,6 +106,7 @@ public abstract class AbstractCircuitBreaker implements CircuitBreaker {
     }
 
     protected boolean fromOpenToHalfOpen(Context context) {
+        // CAS 从open变为half——open
         if (currentState.compareAndSet(State.OPEN, State.HALF_OPEN)) {
             notifyObservers(State.OPEN, State.HALF_OPEN, null);
             Entry entry = context.getCurEntry();
@@ -122,7 +127,7 @@ public abstract class AbstractCircuitBreaker implements CircuitBreaker {
         }
         return false;
     }
-    
+
     private void notifyObservers(CircuitBreaker.State prevState, CircuitBreaker.State newState, Double snapshotValue) {
         for (CircuitBreakerStateChangeObserver observer : observerRegistry.getStateChangeObservers()) {
             observer.onStateChange(prevState, newState, rule, snapshotValue);

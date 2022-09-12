@@ -29,16 +29,20 @@ import java.lang.reflect.Method;
 
 /**
  * Aspect for methods with {@link SentinelResource} annotation.
+ * 带有 {@link SentinelResource} 注释的方法方面。
+ * AspectJ切面
  *
  * @author Eric Zhao
  */
 @Aspect
 public class SentinelResourceAspect extends AbstractSentinelAspectSupport {
 
+    //指定切入点为@SentinelResource
     @Pointcut("@annotation(com.alibaba.csp.sentinel.annotation.SentinelResource)")
     public void sentinelResourceAnnotationPointcut() {
     }
 
+    // 指定切面处理的环绕通知
     @Around("sentinelResourceAnnotationPointcut()")
     public Object invokeResourceWithSentinel(ProceedingJoinPoint pjp) throws Throwable {
         Method originMethod = resolveMethod(pjp);
@@ -53,9 +57,12 @@ public class SentinelResourceAspect extends AbstractSentinelAspectSupport {
         int resourceType = annotation.resourceType();
         Entry entry = null;
         try {
+            //调用之前 创建我们的资源 植入增强功能
             entry = SphU.entry(resourceName, resourceType, entryType, pjp.getArgs());
+            // 调用目标方法
             return pjp.proceed();
         } catch (BlockException ex) {
+            // 降级处理代码
             return handleBlockException(pjp, annotation, ex);
         } catch (Throwable ex) {
             Class<? extends Throwable>[] exceptionsToIgnore = annotation.exceptionsToIgnore();

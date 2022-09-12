@@ -78,20 +78,20 @@ import java.util.Map;
  * <li>{@code 1m-all} is the total of incoming and blocked requests within one minute</li>
  * <li>{@code exception} is for the count of business (customized) exceptions in one second</li>
  * </ul>
- *
+ * <p>
  * This stage is usually used to protect resources from occupying. If a resource
  * takes long time to finish, threads will begin to occupy. The longer the
  * response takes, the more threads occupy.
- *
+ * <p>
  * Besides counter, thread pool or semaphore can also be used to achieve this.
- *
+ * <p>
  * - Thread pool: Allocate a thread pool to handle these resource. When there is
  * no more idle thread in the pool, the request is rejected without affecting
  * other resources.
- *
+ * <p>
  * - Semaphore: Use semaphore to control the concurrent count of the threads in
  * this resource.
- *
+ * <p>
  * The benefit of using thread pool is that, it can walk away gracefully when
  * time out. But it also bring us the cost of context switch and additional
  * threads. If the incoming requests is already served in a separated thread,
@@ -161,13 +161,14 @@ public class FlowSlot extends AbstractLinkedProcessorSlot<DefaultNode> {
     @Override
     public void entry(Context context, ResourceWrapper resourceWrapper, DefaultNode node, int count,
                       boolean prioritized, Object... args) throws Throwable {
+        // 检测并应用流控规则
         checkFlow(resourceWrapper, context, node, count, prioritized);
-
+        // 触发下一个降级规则slot
         fireEntry(context, resourceWrapper, node, count, prioritized, args);
     }
 
     void checkFlow(ResourceWrapper resource, Context context, DefaultNode node, int count, boolean prioritized)
-        throws BlockException {
+            throws BlockException {
         checker.checkFlow(ruleProvider, resource, context, node, count, prioritized);
     }
 
@@ -180,6 +181,8 @@ public class FlowSlot extends AbstractLinkedProcessorSlot<DefaultNode> {
         @Override
         public Collection<FlowRule> apply(String resource) {
             // Flow rule map should not be null.
+            // 流规则图不应为空
+            // 获取到所有资源的流控规则 map的key为 资源名称，value为该资源上加载的所有流控规则
             Map<String, List<FlowRule>> flowRules = FlowRuleManager.getFlowRuleMap();
             return flowRules.get(resource);
         }

@@ -18,6 +18,8 @@ package com.alibaba.csp.sentinel.slotchain;
 import com.alibaba.csp.sentinel.context.Context;
 
 /**
+ * 这个一个单项链条  默认包含一个节点，且first、end指针同时指向这个节点
+ *
  * @author qinan.qn
  * @author jialiang.linjl
  */
@@ -27,7 +29,7 @@ public class DefaultProcessorSlotChain extends ProcessorSlotChain {
 
         @Override
         public void entry(Context context, ResourceWrapper resourceWrapper, Object t, int count, boolean prioritized, Object... args)
-            throws Throwable {
+                throws Throwable {
             super.fireEntry(context, resourceWrapper, t, count, prioritized, args);
         }
 
@@ -71,7 +73,8 @@ public class DefaultProcessorSlotChain extends ProcessorSlotChain {
 
     @Override
     public void entry(Context context, ResourceWrapper resourceWrapper, Object t, int count, boolean prioritized, Object... args)
-        throws Throwable {
+            throws Throwable {
+        // 转向下一个操作对象
         first.transformEntry(context, resourceWrapper, t, count, prioritized, args);
     }
 

@@ -30,6 +30,7 @@ public abstract class AbstractRule implements Rule {
 
     /**
      * Resource name.
+     * 资源名称。
      */
     private String resource;
 
@@ -37,11 +38,14 @@ public abstract class AbstractRule implements Rule {
      * <p>
      * Application name that will be limited by origin.
      * The default limitApp is {@code default}, which means allowing all origin apps.
+     * 将受来源限制的应用程序名称。默认的 limitApp 是 {@code default}，这意味着允许所有源应用程序。
      * </p>
      * <p>
      * For authority rules, multiple origin name can be separated with comma (',').
+     * 对于权限规则，多个来源名称可以用逗号（'，'）分隔。
      * </p>
      */
+    // 请求来源
     private String limitApp;
 
     public Long getId() {
@@ -81,7 +85,7 @@ public abstract class AbstractRule implements Rule {
             return false;
         }
 
-        AbstractRule that = (AbstractRule)o;
+        AbstractRule that = (AbstractRule) o;
 
         if (resource != null ? !resource.equals(that.resource) : that.resource != null) {
             return false;
@@ -105,7 +109,7 @@ public abstract class AbstractRule implements Rule {
     }
 
     public <T extends AbstractRule> T as(Class<T> clazz) {
-        return (T)this;
+        return (T) this;
     }
 
     @Override

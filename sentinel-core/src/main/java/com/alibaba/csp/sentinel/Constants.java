@@ -58,7 +58,7 @@ public final class Constants {
      * Global ROOT statistic node that represents the universal parent node.
      */
     public final static DefaultNode ROOT = new EntranceNode(new StringResourceWrapper(ROOT_ID, EntryType.IN),
-        new ClusterNode(ROOT_ID, ResourceTypeConstants.COMMON));
+            new ClusterNode(ROOT_ID, ResourceTypeConstants.COMMON));
 
     /**
      * Global statistic node for inbound traffic. Usually used for {@code SystemRule} checking.
@@ -72,6 +72,8 @@ public final class Constants {
 
     /**
      * Order of default processor slots
+     * 默认处理器插槽的顺序
+     * 谁小谁排前面
      */
     public static final int ORDER_NODE_SELECTOR_SLOT = -10000;
     public static final int ORDER_CLUSTER_BUILDER_SLOT = -9000;
@@ -82,5 +84,6 @@ public final class Constants {
     public static final int ORDER_FLOW_SLOT = -2000;
     public static final int ORDER_DEGRADE_SLOT = -1000;
 
-    private Constants() {}
+    private Constants() {
+    }
 }

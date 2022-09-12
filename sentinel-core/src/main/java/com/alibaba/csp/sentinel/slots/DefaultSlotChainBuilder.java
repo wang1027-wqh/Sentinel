@@ -37,8 +37,19 @@ public class DefaultSlotChainBuilder implements SlotChainBuilder {
 
     @Override
     public ProcessorSlotChain build() {
+        // 擦黄健链条
         ProcessorSlotChain chain = new DefaultProcessorSlotChain();
 
+        // 通过SPI构建Slot
+        //com.alibaba.csp.sentinel.slots.nodeselector.NodeSelectorSlot
+        //com.alibaba.csp.sentinel.slots.clusterbuilder.ClusterBuilderSlot
+        //com.alibaba.csp.sentinel.slots.logger.LogSlot
+        //com.alibaba.csp.sentinel.slots.statistic.StatisticSlot
+        //com.alibaba.csp.sentinel.slots.block.authority.AuthoritySlot
+        //com.alibaba.csp.sentinel.slots.system.SystemSlot
+        //com.alibaba.csp.sentinel.slots.block.flow.FlowSlot
+        //com.alibaba.csp.sentinel.slots.block.degrade.DegradeSlot
+        // 不止这些 项目里的全部SPI会加载
         List<ProcessorSlot> sortedSlotList = SpiLoader.of(ProcessorSlot.class).loadInstanceListSorted();
         for (ProcessorSlot slot : sortedSlotList) {
             if (!(slot instanceof AbstractLinkedProcessorSlot)) {
@@ -46,6 +57,7 @@ public class DefaultSlotChainBuilder implements SlotChainBuilder {
                 continue;
             }
 
+            // 添加到刚才创建的链条
             chain.addLast((AbstractLinkedProcessorSlot<?>) slot);
         }
 

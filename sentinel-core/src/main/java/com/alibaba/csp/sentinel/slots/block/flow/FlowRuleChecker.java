@@ -46,9 +46,11 @@ public class FlowRuleChecker {
         if (ruleProvider == null || resource == null) {
             return;
         }
+        // 获取到指定资源的所有流控规则
         Collection<FlowRule> rules = ruleProvider.apply(resource.getName());
         if (rules != null) {
             for (FlowRule rule : rules) {
+                // 逐个应用流控规则，若无法通过规则验证，则抛出流控异常，后续规则不在应用
                 if (!canPassCheck(rule, context, node, count, prioritized)) {
                     throw new FlowException(rule.getLimitApp(), rule);
                 }
@@ -57,31 +59,37 @@ public class FlowRuleChecker {
     }
 
     public boolean canPassCheck(/*@NonNull*/ FlowRule rule, Context context, DefaultNode node,
-                                                    int acquireCount) {
+                                             int acquireCount) {
         return canPassCheck(rule, context, node, acquireCount, false);
     }
 
     public boolean canPassCheck(/*@NonNull*/ FlowRule rule, Context context, DefaultNode node, int acquireCount,
-                                                    boolean prioritized) {
+                                             boolean prioritized) {
+        // 从规则中获取限定的资源来源
         String limitApp = rule.getLimitApp();
+        // 若限定来源为null 则请求直接通过
         if (limitApp == null) {
             return true;
         }
 
+        // 使用规则处理集群流控
         if (rule.isClusterMode()) {
             return passClusterCheck(rule, context, node, acquireCount, prioritized);
         }
-
+        // 使用规则处理单机流控
         return passLocalCheck(rule, context, node, acquireCount, prioritized);
     }
 
     private static boolean passLocalCheck(FlowRule rule, Context context, DefaultNode node, int acquireCount,
                                           boolean prioritized) {
+        // 通过规则形成选择出的规则node
         Node selectedNode = selectNodeByRequesterAndStrategy(rule, context, node);
+        // 没有这个node说明没有流控规则，直接返回true
         if (selectedNode == null) {
             return true;
         }
 
+        // 使用规则进行逐项检测
         return rule.getRater().canPass(selectedNode, acquireCount, prioritized);
     }
 
@@ -133,7 +141,7 @@ public class FlowRuleChecker {
 
             return selectReferenceNode(rule, context, node);
         } else if (RuleConstant.LIMIT_APP_OTHER.equals(limitApp)
-            && FlowRuleManager.isOtherOrigin(origin, rule.getResource())) {
+                && FlowRuleManager.isOtherOrigin(origin, rule.getResource())) {
             if (strategy == RuleConstant.STRATEGY_DIRECT) {
                 return context.getOriginNode();
             }

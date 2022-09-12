@@ -72,7 +72,8 @@ public class SphU {
 
     private static final Object[] OBJECTS0 = new Object[0];
 
-    private SphU() {}
+    private SphU() {
+    }
 
     /**
      * Record statistics and perform rule checking for the given resource.
@@ -188,7 +189,7 @@ public class SphU {
      * @throws BlockException if the block criteria is met (e.g. metric exceeded the threshold of any rules)
      */
     public static Entry entry(Method method, EntryType trafficType, int batchCount, Object... args)
-        throws BlockException {
+            throws BlockException {
         return Env.sph.entry(method, trafficType, batchCount, args);
     }
 
@@ -204,7 +205,7 @@ public class SphU {
      * @throws BlockException if the block criteria is met (e.g. metric exceeded the threshold of any rules)
      */
     public static Entry entry(String name, EntryType trafficType, int batchCount, Object... args)
-        throws BlockException {
+            throws BlockException {
         return Env.sph.entry(name, trafficType, batchCount, args);
     }
 
@@ -248,7 +249,7 @@ public class SphU {
      * @since 0.2.0
      */
     public static AsyncEntry asyncEntry(String name, EntryType trafficType, int batchCount, Object... args)
-        throws BlockException {
+            throws BlockException {
         return Env.sph.asyncEntry(name, trafficType, batchCount, args);
     }
 
@@ -308,7 +309,8 @@ public class SphU {
      * @since 1.7.0
      */
     public static Entry entry(String name, int resourceType, EntryType trafficType, Object[] args)
-        throws BlockException {
+            throws BlockException {
+        // 注意第四个参数值为1
         return Env.sph.entryWithType(name, resourceType, trafficType, 1, args);
     }
 
@@ -325,7 +327,7 @@ public class SphU {
      * @since 1.7.0
      */
     public static AsyncEntry asyncEntry(String name, int resourceType, EntryType trafficType)
-        throws BlockException {
+            throws BlockException {
         return Env.sph.asyncEntryWithType(name, resourceType, trafficType, 1, false, OBJECTS0);
     }
 
@@ -343,7 +345,7 @@ public class SphU {
      * @since 1.7.0
      */
     public static AsyncEntry asyncEntry(String name, int resourceType, EntryType trafficType, Object[] args)
-        throws BlockException {
+            throws BlockException {
         return Env.sph.asyncEntryWithType(name, resourceType, trafficType, 1, false, args);
     }
 

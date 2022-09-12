@@ -30,6 +30,7 @@ import java.lang.reflect.Modifier;
 import java.util.Arrays;
 
 /**
+ * Sentinel 注释方面的一些常用功能。
  * Some common functions for Sentinel annotation aspect.
  *
  * @author Eric Zhao
@@ -53,6 +54,7 @@ public abstract class AbstractSentinelAspectSupport {
     }
 
     /**
+     * 检查异常是否在提供的异常类列表中
      * Check whether the exception is in provided list of exception classes.
      *
      * @param ex         provided throwable
@@ -81,7 +83,7 @@ public abstract class AbstractSentinelAspectSupport {
     }
 
     protected Object handleFallback(ProceedingJoinPoint pjp, SentinelResource annotation, Throwable ex)
-        throws Throwable {
+            throws Throwable {
         return handleFallback(pjp, annotation.fallback(), annotation.defaultFallback(), annotation.fallbackClass(), ex);
     }
 
@@ -114,7 +116,7 @@ public abstract class AbstractSentinelAspectSupport {
         Method fallbackMethod = extractDefaultFallbackMethod(pjp, defaultFallback, fallbackClass);
         if (fallbackMethod != null) {
             // Construct args.
-            Object[] args = fallbackMethod.getParameterTypes().length == 0 ? new Object[0] : new Object[] {ex};
+            Object[] args = fallbackMethod.getParameterTypes().length == 0 ? new Object[0] : new Object[]{ex};
             return invoke(pjp, fallbackMethod, args);
         }
 
@@ -123,11 +125,11 @@ public abstract class AbstractSentinelAspectSupport {
     }
 
     protected Object handleBlockException(ProceedingJoinPoint pjp, SentinelResource annotation, BlockException ex)
-        throws Throwable {
+            throws Throwable {
 
         // Execute block handler if configured.
         Method blockHandlerMethod = extractBlockHandlerMethod(pjp, annotation.blockHandler(),
-            annotation.blockHandlerClass());
+                annotation.blockHandlerClass());
         if (blockHandlerMethod != null) {
             Object[] originArgs = pjp.getArgs();
             // Construct args.
@@ -160,6 +162,7 @@ public abstract class AbstractSentinelAspectSupport {
      * necessary. The {@code setAccessible(true)} method is only called
      * when actually necessary, to avoid unnecessary conflicts with a JVM
      * SecurityManager (if active).
+     *
      * @param method the method to make accessible
      * @see java.lang.reflect.Method#setAccessible
      */
@@ -215,7 +218,7 @@ public abstract class AbstractSentinelAspectSupport {
             // One is empty parameter list.
             Class<?>[] defaultParamTypes = new Class<?>[0];
             // The other is a single parameter {@link Throwable} to get relevant exception info.
-            Class<?>[] paramTypeWithException = new Class<?>[] {Throwable.class};
+            Class<?>[] paramTypeWithException = new Class<?>[]{Throwable.class};
             // We first find the default fallback with empty parameter list.
             Method method = findMethod(mustStatic, clazz, defaultFallback, originReturnType, defaultParamTypes);
             // If default fallback with empty params is absent, we then try to find the other one.
@@ -293,8 +296,8 @@ public abstract class AbstractSentinelAspectSupport {
         Method[] methods = clazz.getDeclaredMethods();
         for (Method method : methods) {
             if (name.equals(method.getName()) && checkStatic(mustStatic, method)
-                && returnType.isAssignableFrom(method.getReturnType())
-                && Arrays.equals(parameterTypes, method.getParameterTypes())) {
+                    && returnType.isAssignableFrom(method.getReturnType())
+                    && Arrays.equals(parameterTypes, method.getParameterTypes())) {
 
                 RecordLog.info("Resolved method [{}] in class [{}]", name, clazz.getCanonicalName());
                 return method;
@@ -307,7 +310,7 @@ public abstract class AbstractSentinelAspectSupport {
         } else {
             String methodType = mustStatic ? " static" : "";
             RecordLog.warn("Cannot find{} method [{}] in class [{}] with parameters {}",
-                methodType, name, clazz.getCanonicalName(), Arrays.toString(parameterTypes));
+                    methodType, name, clazz.getCanonicalName(), Arrays.toString(parameterTypes));
             return null;
         }
     }
@@ -317,11 +320,11 @@ public abstract class AbstractSentinelAspectSupport {
     }
 
     protected Method resolveMethod(ProceedingJoinPoint joinPoint) {
-        MethodSignature signature = (MethodSignature)joinPoint.getSignature();
+        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         Class<?> targetClass = joinPoint.getTarget().getClass();
 
         Method method = getDeclaredMethodFor(targetClass, signature.getName(),
-            signature.getMethod().getParameterTypes());
+                signature.getMethod().getParameterTypes());
         if (method == null) {
             throw new IllegalStateException("Cannot resolve target method: " + signature.getMethod().getName());
         }
