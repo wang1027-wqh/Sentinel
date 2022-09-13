@@ -19,6 +19,11 @@ import com.alibaba.csp.sentinel.context.Context;
 
 /**
  * 这个一个单项链条  默认包含一个节点，且first、end指针同时指向这个节点
+ * NodeA------>NodeB
+ * first        end
+ * 新增一个NodeC节点
+ * NodeA------>NodeB------>NodeC
+ * first                    end
  *
  * @author qinan.qn
  * @author jialiang.linjl

@@ -29,13 +29,14 @@ public interface ProcessorSlot<T> {
 
     /**
      * Entrance of this slot.
+     * 此插槽的入口。
      *
-     * @param context         current {@link Context}
-     * @param resourceWrapper current resource
-     * @param param           generics parameter, usually is a {@link com.alibaba.csp.sentinel.node.Node}
-     * @param count           tokens needed
-     * @param prioritized     whether the entry is prioritized
-     * @param args            parameters of the original call
+     * @param context         current {@link Context}      上下文
+     * @param resourceWrapper current resource             包装后的资源对象
+     * @param param           generics parameter, usually is a {@link com.alibaba.csp.sentinel.node.Node}  泛型参数，通常是一个 {@link com.alibaba.csp.sentinel.node.Node}
+     * @param count           tokens needed                     一般是1
+     * @param prioritized     whether the entry is prioritized  默认是false
+     * @param args            parameters of the original call   原始调用的参数
      * @throws Throwable blocked exception or unexpected error
      */
     void entry(Context context, ResourceWrapper resourceWrapper, T param, int count, boolean prioritized,
@@ -43,6 +44,7 @@ public interface ProcessorSlot<T> {
 
     /**
      * Means finish of {@link #entry(Context, ResourceWrapper, Object, int, boolean, Object...)}.
+     * 表示 {@link #entry(Context, ResourceWrapper, Object, int, boolean, Object...)} 的完成。转换下一个节点执行
      *
      * @param context         current {@link Context}
      * @param resourceWrapper current resource
@@ -57,6 +59,7 @@ public interface ProcessorSlot<T> {
 
     /**
      * Exit of this slot.
+     * 此插槽的退出。
      *
      * @param context         current {@link Context}
      * @param resourceWrapper current resource

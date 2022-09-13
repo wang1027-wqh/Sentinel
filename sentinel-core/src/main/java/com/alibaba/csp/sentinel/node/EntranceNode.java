@@ -42,6 +42,10 @@ public class EntranceNode extends DefaultNode {
         super(id, clusterNode);
     }
 
+    /**
+     * 平均RT
+     * @return
+     */
     @Override
     public double avgRt() {
         double total = 0;

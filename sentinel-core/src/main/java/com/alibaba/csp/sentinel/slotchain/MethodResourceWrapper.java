@@ -24,6 +24,7 @@ import com.alibaba.csp.sentinel.util.MethodUtil;
 
 /**
  * Resource wrapper for method invocation.
+ * 方法调用的资源包装器。
  *
  * @author qinan.qn
  */

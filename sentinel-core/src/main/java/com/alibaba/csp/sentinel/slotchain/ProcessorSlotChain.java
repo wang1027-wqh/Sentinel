@@ -24,6 +24,7 @@ public abstract class ProcessorSlotChain extends AbstractLinkedProcessorSlot<Obj
 
     /**
      * Add a processor to the head of this slot chain.
+     * 将处理器添加到此插槽链的头部。
      *
      * @param protocolProcessor processor to be added.
      */
@@ -31,6 +32,7 @@ public abstract class ProcessorSlotChain extends AbstractLinkedProcessorSlot<Obj
 
     /**
      * Add a processor to the tail of this slot chain.
+     * 在此插槽链的尾部添加一个处理器。
      *
      * @param protocolProcessor processor to be added.
      */

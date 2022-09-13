@@ -21,6 +21,7 @@ import com.alibaba.csp.sentinel.spi.SpiLoader;
 
 /**
  * A provider for creating slot chains via resolved slot chain builder SPI.
+ * 通过已解析的插槽链构建器 SPI 创建插槽链的提供程序。
  *
  * @author Eric Zhao
  * @since 0.2.0

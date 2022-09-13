@@ -34,6 +34,7 @@ public interface Node extends OccupySupport, DebugSupport {
 
     /**
      * Get incoming request per minute ({@code pass + block}).
+     * 每分钟获取传入请求（{@code pass + block}）。
      *
      * @return total request count per minute
      */
@@ -41,6 +42,7 @@ public interface Node extends OccupySupport, DebugSupport {
 
     /**
      * Get pass count per minute.
+     * 获取每分钟通过次数。
      *
      * @return total passed request count per minute
      * @since 1.5.0
@@ -49,6 +51,7 @@ public interface Node extends OccupySupport, DebugSupport {
 
     /**
      * Get {@link Entry#exit()} count per minute.
+     * 每分钟获取 {@link Entry Exit()} 计数。
      *
      * @return total completed request count per minute
      */
@@ -56,6 +59,7 @@ public interface Node extends OccupySupport, DebugSupport {
 
     /**
      * Get blocked request count per minute (totalBlockRequest).
+     * 获取每分钟被阻止的请求计数（totalBlockRequest）。
      *
      * @return total blocked request count per minute
      */
@@ -63,6 +67,7 @@ public interface Node extends OccupySupport, DebugSupport {
 
     /**
      * Get exception count per minute.
+     * 获取每分钟的异常计数。
      *
      * @return total business exception count per minute
      */
@@ -70,6 +75,7 @@ public interface Node extends OccupySupport, DebugSupport {
 
     /**
      * Get pass request per second.
+     * 每秒获取通过请求。
      *
      * @return QPS of passed requests
      */
@@ -77,6 +83,7 @@ public interface Node extends OccupySupport, DebugSupport {
 
     /**
      * Get block request per second.
+     * 每秒获取块请求。
      *
      * @return QPS of blocked requests
      */
@@ -84,6 +91,7 @@ public interface Node extends OccupySupport, DebugSupport {
 
     /**
      * Get {@link #passQps()} + {@link #blockQps()} request per second.
+     * 每秒获取 {@link #passQps()} + {@link #blockQps()} 请求。
      *
      * @return QPS of passed and blocked requests
      */

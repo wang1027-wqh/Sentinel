@@ -30,6 +30,7 @@ public @interface Spi {
 
     /**
      * Alias name of Provider class
+     * Provider 类的别名
      */
     String value() default "";
 
@@ -45,6 +46,7 @@ public @interface Spi {
 
     /**
      * Order priority of Provider class
+     * Provider 类的顺序优先级
      */
     int order() default 0;
 

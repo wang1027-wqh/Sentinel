@@ -46,11 +46,13 @@ public class ContextUtil {
 
     /**
      * Store the context in ThreadLocal for easy access.
+     * 将上下文存储在 ThreadLocal 中以便于访问。
      */
     private static ThreadLocal<Context> contextHolder = new ThreadLocal<>();
 
     /**
      * Holds all {@link EntranceNode}. Each {@link EntranceNode} is associated with a distinct context name.
+     * 持有所有 {@link EntranceNode}。每个 {@link EntranceNode} 都与一个不同的上下文名称相关联。
      */
     private static volatile Map<String, DefaultNode> contextNameNodeMap = new HashMap<>();
 
@@ -59,6 +61,7 @@ public class ContextUtil {
 
     static {
         // Cache the entrance node for default context.
+        // 缓存默认上下文的入口节点。
         initDefaultContext();
     }
 
@@ -71,6 +74,7 @@ public class ContextUtil {
 
     /**
      * Not thread-safe, only for test.
+     * 不是线程安全的，仅用于测试。
      */
     static void resetContextMap() {
         if (contextNameNodeMap != null) {
@@ -213,10 +217,12 @@ public class ContextUtil {
     /**
      * Exit context of current thread, that is removing {@link Context} in the
      * ThreadLocal.
+     * 当前线程的退出上下文，即删除 ThreadLocal 中的 {@link Context}。
      */
     public static void exit() {
         Context context = contextHolder.get();
         if (context != null && context.getCurEntry() == null) {
+            // 将当前线程对应对上下文置空
             contextHolder.set(null);
         }
     }

@@ -92,6 +92,7 @@ public class StatisticNode implements Node {
     /**
      * Holds statistics of the recent {@code INTERVAL} milliseconds. The {@code INTERVAL} is divided into time spans
      * by given {@code sampleCount}.
+     * 保存最近 {@code INTERVAL} 毫秒的统计信息。 {@code INTERVAL} 按给定的 {@code sampleCount} 划分为时间跨度。
      */
     private transient volatile Metric rollingCounterInSecond = new ArrayMetric(SampleCountProperty.SAMPLE_COUNT,
             IntervalProperty.INTERVAL);
@@ -99,22 +100,26 @@ public class StatisticNode implements Node {
     /**
      * Holds statistics of the recent 60 seconds. The windowLengthInMs is deliberately set to 1000 milliseconds,
      * meaning each bucket per second, in this way we can get accurate statistics of each second.
+     * 保存最近 60 秒的统计信息。 windowLengthInMs 特意设置为 1000 毫秒，意思是每桶每秒，这样我们就可以得到每一秒的准确统计。
      */
     private transient Metric rollingCounterInMinute = new ArrayMetric(60, 60 * 1000, false);
 
     /**
      * The counter for thread count.
+     * 线程计数的计数器。
      */
     private LongAdder curThreadNum = new LongAdder();
 
     /**
      * The last timestamp when metrics were fetched.
+     * 获取指标时的最后一个时间戳。
      */
     private long lastFetchTime = -1;
 
     @Override
     public Map<Long, MetricNode> metrics() {
         // The fetch operation is thread-safe under a single-thread scheduler pool.
+        // fetch 操作在单线程调度程序池下是线程安全的。
         long currentTime = TimeUtil.currentTimeMillis();
         currentTime = currentTime - currentTime % 1000;
         Map<Long, MetricNode> metrics = new ConcurrentHashMap<>();

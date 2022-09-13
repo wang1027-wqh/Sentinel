@@ -72,10 +72,14 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public final class SpiLoader<S> {
 
-    // Default path for the folder of Provider configuration file
+    /**
+     * Default path for the folder of Provider configuration file
+     * Provider配置文件文件夹默认路径
+     */
     private static final String SPI_FILE_PREFIX = "META-INF/services/";
 
     // Cache the SpiLoader instances, key: classname of Service, value: SpiLoader instance
+    // 缓存SpiLoader实例，key：Service的类名，value：SpiLoader实例
     private static final ConcurrentHashMap<String, SpiLoader> SPI_LOADER_MAP = new ConcurrentHashMap<>();
 
     // Cache the classes of Provider
@@ -105,7 +109,9 @@ public final class SpiLoader<S> {
 
     /**
      * Create SpiLoader instance via Service class
+     * 通过 Service 类创建 SpiLoader 实例
      * Cached by className, and load from cache first
+     * 由className缓存，先从缓存中加载
      *
      * @param service Service class
      * @param <T>     Service type
@@ -407,6 +413,7 @@ public final class SpiLoader<S> {
         }
 
         sortedClassList.addAll(classList);
+        // 自定义插槽链条的顺序实现
         Collections.sort(sortedClassList, new Comparator<Class<? extends S>>() {
             @Override
             public int compare(Class<? extends S> o1, Class<? extends S> o2) {

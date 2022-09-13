@@ -26,6 +26,7 @@ public interface SlotChainBuilder {
 
     /**
      * Build the processor slot chain.
+     * 构建处理器插槽链。
      *
      * @return a processor slot that chain some slots together
      */

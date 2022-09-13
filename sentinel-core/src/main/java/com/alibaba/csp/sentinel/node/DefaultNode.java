@@ -42,16 +42,19 @@ public class DefaultNode extends StatisticNode {
 
     /**
      * The resource associated with the node.
+     * 与节点关联的资源。
      */
     private ResourceWrapper id;
 
     /**
      * The list of all child nodes.
+     * 所有子节点的列表。
      */
     private volatile Set<Node> childList = new HashSet<>();
 
     /**
      * Associated cluster node.
+     * 关联的集群节点。
      */
     private ClusterNode clusterNode;
 
@@ -74,6 +77,7 @@ public class DefaultNode extends StatisticNode {
 
     /**
      * Add child node to current node.
+     * 将子节点添加到当前节点。
      *
      * @param node valid child node
      */
@@ -82,9 +86,11 @@ public class DefaultNode extends StatisticNode {
             RecordLog.warn("Trying to add null child to node <{}>, ignored", id.getName());
             return;
         }
+        // DCL
         if (!childList.contains(node)) {
             synchronized (this) {
                 if (!childList.contains(node)) {
+                    // 迭代稳定性问题
                     Set<Node> newSet = new HashSet<>(childList.size() + 1);
                     newSet.addAll(childList);
                     newSet.add(node);

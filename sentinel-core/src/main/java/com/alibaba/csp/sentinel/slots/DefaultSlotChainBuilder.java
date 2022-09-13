@@ -37,7 +37,7 @@ public class DefaultSlotChainBuilder implements SlotChainBuilder {
 
     @Override
     public ProcessorSlotChain build() {
-        // 擦黄健链条
+        // 创建链条
         ProcessorSlotChain chain = new DefaultProcessorSlotChain();
 
         // 通过SPI构建Slot

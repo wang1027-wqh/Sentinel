@@ -32,6 +32,7 @@ public class ParamFlowStatisticEntryCallback implements ProcessorSlotEntryCallba
     @Override
     public void onPass(Context context, ResourceWrapper resourceWrapper, DefaultNode node, int count, Object... args) {
         // The "hot spot" parameter metric is present only if parameter flow rules for the resource exist.
+        // 仅当资源的参数流规则存在时，才存在“热点”参数度量。
         ParameterMetric parameterMetric = ParameterMetricStorage.getParamMetric(resourceWrapper);
 
         if (parameterMetric != null) {
