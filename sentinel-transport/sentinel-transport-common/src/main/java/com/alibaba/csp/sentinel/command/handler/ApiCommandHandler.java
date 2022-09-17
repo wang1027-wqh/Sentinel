@@ -27,10 +27,10 @@ import java.util.Map;
 
 /**
  * <p>
- * List all available command handlers by request: </br>
+ * List all available command handlers by request: </br>：
  * {@code curl http://ip:commandPort/api}
  * </p>
- *
+ * 按请求列出所有可用的命令处理程序
  * @author houyi
  * @since 1.5.0
  */

@@ -288,21 +288,23 @@ public final class SystemRuleManager {
      * @throws BlockException when any system rule's threshold is exceeded.
      */
     public static void checkSystem(ResourceWrapper resourceWrapper, int count) throws BlockException {
+        // 资源为空 直接返回
         if (resourceWrapper == null) {
             return;
         }
-        // Ensure the checking switch is on.
+        // Ensure the checking switch is on. 检查开关是否开启
         if (!checkSystemStatus.get()) {
             return;
         }
 
-        // for inbound traffic only
+        // for inbound traffic only 仅用于入站流量
         if (resourceWrapper.getEntryType() != EntryType.IN) {
             return;
         }
 
-        // total qps
+        // total qps 当前总总qps
         double currentQps = Constants.ENTRY_NODE == null ? 0.0 : Constants.ENTRY_NODE.passQps();
+        // 如果 当前总总qps + 本次的数量 大于阈值  直接跑出异常
         if (currentQps + count > qps) {
             throw new SystemBlockException(resourceWrapper.getName(), "qps");
         }
@@ -313,6 +315,7 @@ public final class SystemRuleManager {
             throw new SystemBlockException(resourceWrapper.getName(), "thread");
         }
 
+        // RT判断
         double rt = Constants.ENTRY_NODE == null ? 0 : Constants.ENTRY_NODE.avgRt();
         if (rt > maxRt) {
             throw new SystemBlockException(resourceWrapper.getName(), "rt");

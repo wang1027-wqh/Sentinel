@@ -26,6 +26,7 @@ import com.alibaba.csp.sentinel.slots.block.RuleConstant;
 
 /**
  * Rules for "hot-spot" frequent parameter flow control.
+ * “热点”频繁参数流控制的规则。
  *
  * @author jialiang.linjl
  * @author Eric Zhao
@@ -41,11 +42,13 @@ public class ParamFlowRule extends AbstractRule {
 
     /**
      * The threshold type of flow control (0: thread count, 1: QPS).
+     * 流控制的阈值类型（0：线程数，1：QPS）。
      */
     private int grade = RuleConstant.FLOW_GRADE_QPS;
 
     /**
      * Parameter index.
+     * 参数索引。
      */
     private Integer paramIdx;
 
@@ -56,6 +59,7 @@ public class ParamFlowRule extends AbstractRule {
 
     /**
      * Traffic shaping behavior (since 1.6.0).
+     * 流量整形行为（从 1.6.0 开始）。
      */
     private int controlBehavior = RuleConstant.CONTROL_BEHAVIOR_DEFAULT;
 

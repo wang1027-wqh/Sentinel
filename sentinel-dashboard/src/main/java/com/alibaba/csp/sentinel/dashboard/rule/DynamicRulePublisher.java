@@ -23,6 +23,7 @@ public interface DynamicRulePublisher<T> {
 
     /**
      * Publish rules to remote rule configuration center for given application name.
+     * 将规则发布到给定应用程序名称的远程规则配置中心。
      *
      * @param app app name
      * @param rules list of rules to push

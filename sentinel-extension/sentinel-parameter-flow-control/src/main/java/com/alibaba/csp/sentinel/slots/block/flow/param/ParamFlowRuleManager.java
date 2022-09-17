@@ -79,6 +79,7 @@ public final class ParamFlowRuleManager {
     }
 
     public static boolean hasRules(String resourceName) {
+        // 从缓存中获取该资源对应的热点参数流控规则
         List<ParamFlowRule> rules = PARAM_FLOW_RULES.get(resourceName);
         return rules != null && !rules.isEmpty();
     }

@@ -35,7 +35,9 @@ public class SystemSlot extends AbstractLinkedProcessorSlot<DefaultNode> {
     @Override
     public void entry(Context context, ResourceWrapper resourceWrapper, DefaultNode node, int count,
                       boolean prioritized, Object... args) throws Throwable {
+        // 应用系统保护流控规则
         SystemRuleManager.checkSystem(resourceWrapper, count);
+        //切换操作节点
         fireEntry(context, resourceWrapper, node, count, prioritized, args);
     }
 

@@ -26,6 +26,7 @@ import java.util.List;
 
 /**
  * A processor slot that is responsible for flow control by frequent ("hot spot") parameters.
+ * 一个处理器插槽，负责通过频繁（“热点”）参数进行流量控制。
  *
  * @author jialiang.linjl
  * @author Eric Zhao
@@ -37,11 +38,13 @@ public class ParamFlowSlot extends AbstractLinkedProcessorSlot<DefaultNode> {
     @Override
     public void entry(Context context, ResourceWrapper resourceWrapper, DefaultNode node, int count,
                       boolean prioritized, Object... args) throws Throwable {
+        // 如果不存在热点参数流控规则 直接触发下一个节点
         if (!ParamFlowRuleManager.hasRules(resourceWrapper.getName())) {
             fireEntry(context, resourceWrapper, node, count, prioritized, args);
             return;
         }
 
+        // 应用热点参数流控规则
         checkFlow(resourceWrapper, count, args);
         fireEntry(context, resourceWrapper, node, count, prioritized, args);
     }
@@ -64,18 +67,22 @@ public class ParamFlowSlot extends AbstractLinkedProcessorSlot<DefaultNode> {
     }
 
     void checkFlow(ResourceWrapper resourceWrapper, int count, Object... args) throws BlockException {
+        // 如果原始请求的参数为null 直接返回
         if (args == null) {
             return;
         }
+        // 如果没有热点参数流控规则 直接返回
         if (!ParamFlowRuleManager.hasRules(resourceWrapper.getName())) {
             return;
         }
+        // 从缓存map中获取所有的热点参数流控规则
         List<ParamFlowRule> rules = ParamFlowRuleManager.getRulesOfResource(resourceWrapper.getName());
 
         for (ParamFlowRule rule : rules) {
+            // 设置参数的索引
             applyRealParamIdx(rule, args.length);
 
-            // Initialize the parameter metrics.
+            // Initialize the parameter metrics. 初始化参数指标。
             ParameterMetricStorage.initParamMetricsFor(resourceWrapper, rule);
 
             if (!ParamFlowChecker.passCheck(resourceWrapper, rule, count, args)) {

@@ -38,7 +38,9 @@ public class AuthoritySlot extends AbstractLinkedProcessorSlot<DefaultNode> {
     @Override
     public void entry(Context context, ResourceWrapper resourceWrapper, DefaultNode node, int count, boolean prioritized, Object... args)
         throws Throwable {
+        // 应用权限流控规则
         checkBlackWhiteAuthority(resourceWrapper, context);
+        // 切换操作节点
         fireEntry(context, resourceWrapper, node, count, prioritized, args);
     }
 
@@ -48,8 +50,9 @@ public class AuthoritySlot extends AbstractLinkedProcessorSlot<DefaultNode> {
     }
 
     void checkBlackWhiteAuthority(ResourceWrapper resource, Context context) throws AuthorityException {
+        // 获取本地缓存的来源访问控制规则
         Map<String, Set<AuthorityRule>> authorityRules = AuthorityRuleManager.getAuthorityRules();
-
+        // 如果为空直接返回
         if (authorityRules == null) {
             return;
         }
@@ -58,7 +61,7 @@ public class AuthoritySlot extends AbstractLinkedProcessorSlot<DefaultNode> {
         if (rules == null) {
             return;
         }
-
+        // 一个一个判断 不符合抛出异常
         for (AuthorityRule rule : rules) {
             if (!AuthorityRuleChecker.passCheck(rule, context)) {
                 throw new AuthorityException(context.getOrigin(), rule);

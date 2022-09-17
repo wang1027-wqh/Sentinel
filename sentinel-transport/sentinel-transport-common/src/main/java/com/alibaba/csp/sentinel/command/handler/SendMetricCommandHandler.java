@@ -34,6 +34,7 @@ import com.alibaba.csp.sentinel.util.TimeUtil;
 
 /**
  * Retrieve and aggregate {@link MetricNode} metrics.
+ * 检索和聚合 {@link MetricNode} 指标。
  *
  * @author leyou
  * @author Eric Zhao

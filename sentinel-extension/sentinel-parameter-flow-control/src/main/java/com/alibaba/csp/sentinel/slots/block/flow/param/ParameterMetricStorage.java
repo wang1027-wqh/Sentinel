@@ -38,6 +38,7 @@ public final class ParameterMetricStorage {
     /**
      * Init the parameter metric and index map for given resource.
      * Package-private for test.
+     * 为给定资源初始化参数度量和索引映射。用于测试的包私有。
      *
      * @param resourceWrapper resource to init
      * @param rule            relevant rule
@@ -48,7 +49,7 @@ public final class ParameterMetricStorage {
         }
         String resourceName = resourceWrapper.getName();
         ParameterMetric metric;
-        // Assume that the resource is valid.
+        // Assume that the resource is valid.  假设资源是有效的。
         if ((metric = metricsMap.get(resourceName)) == null) {
             synchronized (LOCK) {
                 if ((metric = metricsMap.get(resourceName)) == null) {
@@ -58,6 +59,7 @@ public final class ParameterMetricStorage {
                 }
             }
         }
+        // 初始化
         metric.initialize(rule);
     }
 

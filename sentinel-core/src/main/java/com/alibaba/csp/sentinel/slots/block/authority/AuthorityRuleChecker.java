@@ -30,12 +30,12 @@ final class AuthorityRuleChecker {
     static boolean passCheck(AuthorityRule rule, Context context) {
         String requester = context.getOrigin();
 
-        // Empty origin or empty limitApp will pass.
+        // Empty origin or empty limitApp will pass.空的 origin 或空的 limitApp 将通过。
         if (StringUtil.isEmpty(requester) || StringUtil.isEmpty(rule.getLimitApp())) {
             return true;
         }
 
-        // Do exact match with origin name.
+        // Do exact match with origin name. 与来源限制名称完全匹配
         int pos = rule.getLimitApp().indexOf(requester);
         boolean contain = pos > -1;
 

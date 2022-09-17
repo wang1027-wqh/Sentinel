@@ -157,6 +157,7 @@ public final class SpiLoader<S> {
 
     /**
      * Load all Provider instances of the specified Service
+     * 加载指定Service的所有Provider实例
      *
      * @return Provider instances list
      */
@@ -168,6 +169,7 @@ public final class SpiLoader<S> {
 
     /**
      * Load all Provider instances of the specified Service, sorted by order value in class's {@link Spi} annotation
+     * 加载指定 Service 的所有 Provider 实例，按类的 {@link Spi} 注解中的 order 值排序
      *
      * @return Sorted Provider instances list
      */
@@ -179,6 +181,7 @@ public final class SpiLoader<S> {
 
     /**
      * Load highest order priority instance, order value is defined in class's {@link Spi} annotation
+     * 加载最高顺序优先级实例，顺序值在类的 {@link Spi} 注解中定义
      *
      * @return Provider instance of highest order priority
      */
@@ -195,6 +198,7 @@ public final class SpiLoader<S> {
 
     /**
      * Load lowest order priority instance, order value is defined in class's {@link Spi} annotation
+     * 加载最低顺序优先级实例，顺序值在类的 {@link Spi} 注释中定义
      *
      * @return Provider instance of lowest order priority
      */
@@ -211,6 +215,7 @@ public final class SpiLoader<S> {
 
     /**
      * Load the first-found Provider instance
+     * 加载第一个找到的 Provider 实例
      *
      * @return Provider instance of first-found specific
      */
@@ -228,6 +233,7 @@ public final class SpiLoader<S> {
 
     /**
      * Load the first-found Provider instance,if not found, return default Provider instance
+     * 加载第一个找到的Provider实例，如果没有找到，返回默认的Provider实例
      *
      * @return Provider instance
      */
@@ -435,6 +441,7 @@ public final class SpiLoader<S> {
 
     /**
      * Create Provider instance list
+     * 创建 Provider 实例列表
      *
      * @param clazzList class types of Providers
      * @return Provider instance list

@@ -66,6 +66,7 @@ public class SpiLoaderTest {
         assertSame(slotLoader1, slotLoader2);
 
         SpiLoader initFuncLoader1 = SpiLoader.of(InitFunc.class);
+        initFuncLoader1.loadInstanceList()
         assertNotNull(initFuncLoader1);
         assertNotSame(slotLoader1, initFuncLoader1);
         assertNotEquals(slotLoader1, initFuncLoader1);

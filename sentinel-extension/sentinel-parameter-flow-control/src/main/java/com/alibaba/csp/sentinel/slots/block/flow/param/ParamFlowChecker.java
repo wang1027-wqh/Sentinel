@@ -39,6 +39,7 @@ import com.alibaba.csp.sentinel.util.TimeUtil;
 
 /**
  * Rule checker for parameter flow control.
+ * 用于参数流控制的规则检查器。
  *
  * @author Eric Zhao
  * @since 0.2.0
@@ -47,31 +48,35 @@ public final class ParamFlowChecker {
 
     public static boolean passCheck(ResourceWrapper resourceWrapper, /*@Valid*/ ParamFlowRule rule, /*@Valid*/ int count,
                              Object... args) {
+        // 参数为空 直接通过
         if (args == null) {
             return true;
         }
 
+        // 参数下标 大于参数长度 直接通过
         int paramIdx = rule.getParamIdx();
         if (args.length <= paramIdx) {
             return true;
         }
 
-        // Get parameter value.
+        // Get parameter value. 获取参数值。
         Object value = args[paramIdx];
 
-        // Assign value with the result of paramFlowKey method
+        // Assign value with the result of paramFlowKey method 用 paramFlowKey 方法的结果赋值
         if (value instanceof ParamFlowArgument) {
             value = ((ParamFlowArgument) value).paramFlowKey();
         }
-        // If value is null, then pass
+        // If value is null, then pass 参数值为空 直接通过
         if (value == null) {
             return true;
         }
 
+        // 集群热点参数流控判断
         if (rule.isClusterMode() && rule.getGrade() == RuleConstant.FLOW_GRADE_QPS) {
             return passClusterCheck(resourceWrapper, rule, count, value);
         }
 
+        // 单机热点参数流控规则判断
         return passLocalCheck(resourceWrapper, rule, count, value);
     }
 
@@ -104,7 +109,9 @@ public final class ParamFlowChecker {
 
     static boolean passSingleValueCheck(ResourceWrapper resourceWrapper, ParamFlowRule rule, int acquireCount,
                                         Object value) {
+        // 如果流控规则是QPS
         if (rule.getGrade() == RuleConstant.FLOW_GRADE_QPS) {
+            // 是否是流量整形行为
             if (rule.getControlBehavior() == RuleConstant.CONTROL_BEHAVIOR_RATE_LIMITER) {
                 return passThrottleLocalCheck(resourceWrapper, rule, acquireCount, value);
             } else {
